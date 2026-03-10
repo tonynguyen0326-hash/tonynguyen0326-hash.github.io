@@ -36,6 +36,17 @@
         <button onclick="startConnect()">Start</button>
         <button onclick="endConnect()">End</button>
 
+        <br><br><br>
+
+        <!-- add area for typing topics and messages, disabled before host and port chosen -->
+        <label>Topic</label>
+        <input type="text" id="topic" placeholder="Enter/your/topic." disabled><br><br>
+
+        <label>Message</label>
+        <input type="text" id="message" placeholder="Enter your message." disabled><br><br>
+        
+        <button onclick="publishMessage()" id="PublishButton" disabled>Publish!</button>
+
     </body>
 
 </html>
