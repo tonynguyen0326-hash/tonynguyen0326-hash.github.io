@@ -27,7 +27,7 @@ function startConnect() {
     }
 
     // give client random numbers for ID
-    client = new Paho.MQTT.Client(host, port, "client_" + Math.random());
+    client = new Paho.MQTT.Client(host, port, "/mqtt","client_" + Math.random());
 
     // set callback handlers
     client.onConnectionLost = onConnectionLost;
