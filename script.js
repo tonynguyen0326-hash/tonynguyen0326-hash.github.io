@@ -34,11 +34,12 @@ function onConnect() {
     // send message
     console.log("Connected to MQTT message broker!");
 
-    // enable ability to choose topic and send message
+    // enable ability to choose topic, send message, and share status
 
     document.getElementById("topic").disabled = false;
     document.getElementById("message").disabled = false;
     document.getElementById("PublishButton").disabled = false;
+    document.getElementById("StatusButton").disabled = false;
 }
 
 // function to end connection
@@ -54,10 +55,11 @@ function endConnect() {
     document.getElementById("host").disabled = false;
     document.getElementById("port").disabled = false; 
     
-    // disable ability to choose topic and send message
+    // disable ability to choose topic, send message, or share status
     document.getElementById("topic").disabled = true;
     document.getElementById("message").disabled = true;
     document.getElementById("PublishButton").disabled = true;
+    document.getElementById("StatusButton").disabled = true;
 }
 
 // function when client loses connection
@@ -103,4 +105,53 @@ function publishMessage() {
 // function for when message arrived
 function onMessageArrived(mqtt) {
     console.log("onMessageArrived: " + mqtt.payloadString);
+}
+
+// function to share status
+function shareStatus() {
+
+    // make sure user is connected to broker
+    if (!client || !client.isConnected()) {
+        alert("A host broker and a port number need to be entered to send a message.");
+        return
+    }
+    
+    // make sure Geolocation Javascript API is working
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by the browser.");
+        return;
+    }
+
+    // use API
+    navigator.geolocation.getCurrentPosition(function(position) {
+        
+        // get latitude and longitude
+        var lat = position.coords.latitude;
+        var long = position.coords.longitude;
+
+        // get random temperature value
+        var min = -40;
+        var max = 60;
+        temp = Math.floor(Math.random() * (max - min + 1) + min);
+
+        // generate GeoJSON
+        var geojson = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [long, lat]
+            },
+            "properties": {
+                "temperature": temp
+            }
+        };
+
+        // convert to MQTT
+        var mqtt = new Paho.MQTT.Message(JSON.stringify(geojson));
+        mqtt.destinationName = "ENGO_551/Tony_Nguyen/my_temperature";
+        client.send(mqtt);
+
+        console.log("GeoJSON published: ", geojson);
+
+    });
 }
