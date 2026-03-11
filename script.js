@@ -34,7 +34,10 @@ function startConnect() {
     client.onMessageArrived = onMessageArrived;
     
     // connect client
-    client.connect({onSuccess: onConnect});
+    client.connect({
+        onSuccess: onConnect,
+        useSSL: true
+    });
 
     // disable changing host and port values
     document.getElementById("host").disabled = true;
